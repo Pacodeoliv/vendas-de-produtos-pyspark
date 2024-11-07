@@ -6,9 +6,11 @@ authors = ["Paco <pacodeoliveirasaavedra@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.12"
+python = "^3.10"
 pyspark = "^3.5.3"
 kagglehub = "^0.3.3"
+pandas = "^2.2.3"
+streamlit = "^1.40.0"
 
 
 [build-system]

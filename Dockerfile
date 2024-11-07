@@ -1,23 +1,27 @@
-FROM python:3.12
+FROM python:3.10.12
 
-
+# diretorio de trabalho
 WORKDIR /src
 
+# instalando poetry
+RUN pip install --no-cache-dir poetry
 
-COPY poetry.lock pyproject.toml ./
+# Ccopiando arquivos do pyproject do poetry pra isntalar
+COPY pyproject.toml poetry.lock ./
 
 
-RUN pip install poetry && \
+#aqui ele roda 
+RUN pip install --no-cache-dir poetry && \
     poetry config virtualenvs.create false && \
-    poetry install --no-dev
+    poetry install --only main
+
+# copiando o resto dos arquivos
+COPY ./tables /src/tables
+COPY pyspark-basico.py /src/
+
+#expondo pra porta 8501
+EXPOSE 8501
 
 
-COPY . .
 
 
-COPY ./tables/ /src/tables/
-
-
-ENV PYTHONPATH=/src
-
-CMD ["python", "pyspark-basico.py"]
