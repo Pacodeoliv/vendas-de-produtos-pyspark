@@ -36,14 +36,17 @@ data_path = "../vendas-de-produtos-pyspark/data/olist/"
 
 # o + "nome do arquivo" é pra selecionar o arquivo dentro do path    (header = primeira linha aonde define oq é cada coisa)
 customers_df = spark.read.csv(data_path + "olist_customers_dataset.csv", header=True, inferSchema=True)
-cleaned_customers_df = customers_df.dropna()
-#dropa as colunas com mvalores nul
-# customers_df.dropna()
-
-
-# o + "nome do arquivo" é pra selecionar o arquivo dentro do path    (header = primeira linha aonde define oq é cada coisa)
 orders_df = spark.read.csv(data_path + "olist_orders_dataset.csv", header=True, inferSchema=True)
 orders_df = orders_df.withColumn("order_date", to_date(col("order_purchase_timestamp")))
+products_df = spark.read.csv(data_path + "olist_products_dataset.csv", header=True, inferSchema=True)
+seller_df = spark.read.csv(data_path + "olist_sellers_dataset.csv", header=True, inferSchema=True)
+product_cat_name_pt_eng_df = spark.read.csv(data_path + "product_category_name_translation.csv", header=True, inferSchema=True)
+payment_df = spark.read.csv(data_path + "olist_order_payments_dataset.csv", header=True, inferSchema=True)
+
+#dropa as colunas com mvalores nul
+# customers_df.dropna()
+cleaned_orders_df = orders_df.dropna()
+cleaned_customers_df = customers_df.dropna()
 
 
 # pra renomear só usar esse comando / nome antigo na frente , nome novo
@@ -51,22 +54,28 @@ orders_df = orders_df.withColumn("order_date", to_date(col("order_purchase_times
 
 
 # Mostrar as primeiras linhas e esquemas para conferência
-customers_df.printSchema()
-customers_df.show(5)
-print("=-"* 30)
+#customers_df.printSchema()
+#customers_df.show(5)
+#print("=-"* 30)
 
-cleaned_customers_df.printSchema()
-cleaned_customers_df.show(5)
-print("=-"* 30)
+#cleaned_customers_df.printSchema()
+#cleaned_customers_df.show(5)
+#print("=-"* 30)
 
-orders_df.printSchema()
-orders_df.show(5)
-print("=-"* 30)
+#orders_df.printSchema()
+#orders_df.show(5)
+#print("=-"* 30)
 
 # Converter os DataFrames do PySpark para pandas para salvar no PostgreSQL
 customers_pd = customers_df.toPandas()
 orders_pd = orders_df.toPandas()
 cleaned_customers_df = cleaned_customers_df.toPandas()
+cleaned_orders_df = orders_df.toPandas()
+products_df = products_df.toPandas()
+seller_df = seller_df.toPandas()
+product_cat_name_pt_eng_df = product_cat_name_pt_eng_df.toPandas()
+payment_df = payment_df.toPandas()
+
 
 
 try:
@@ -80,7 +89,25 @@ try:
 
      # Salvar a tabela 'cleaner_customers' no banco de dados
     cleaned_customers_df.to_sql('cleaned_customers', con=engine, schema=DB_SCHEMA, if_exists='replace', index=False)
-    print("Tabela 'customers' salva com sucesso no banco de dados!")
+    print("Tabela 'cleaned_customers' salva com sucesso no banco de dados!")
+
+     # Salvar a tabela 'cleaner_orders' no banco de dados
+    cleaned_orders_df.to_sql('cleaned_orders', con=engine, schema=DB_SCHEMA, if_exists='replace', index=False)
+    print("Tabela 'cleaned_orders' salva com sucesso no banco de dados!")
+
+      # Salvar a tabela 'products' no banco de dados
+    products_df.to_sql('products', con=engine, schema=DB_SCHEMA, if_exists='replace', index=False)
+    print("Tabela 'products' salva com sucesso no banco de dados!")
+
+     # Salvar a tabela 'seller' no banco de dados
+    seller_df.to_sql('seller', con=engine, schema=DB_SCHEMA, if_exists='replace', index=False)
+    print("Tabela 'seller' salva com sucesso no banco de dados!")
+
+    product_cat_name_pt_eng_df.to_sql('product_cat_name_pt_eng', con=engine, schema=DB_SCHEMA, if_exists='replace', index=False)
+    print("Tabela 'product_cat_name_pt_eng' salva com sucesso no banco de dados!")
+
+    payment_df.to_sql('order_payment', con=engine, schema=DB_SCHEMA, if_exists='replace', index=False)
+    print("Tabela 'order_payment' salva com sucesso no banco de dados!")
 
 except ProgrammingError as e:
     print(f"Erro ao salvar no banco de dados: {e}")
