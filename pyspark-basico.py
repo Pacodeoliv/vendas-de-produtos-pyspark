@@ -54,16 +54,20 @@ orders = spark.read.option("header", True).csv(file_path2)
 #st.dataframe(orders.withColumn("days_between_purchase_and_approval",F.datediff(F.col("order_approved_at"),F.col("order_purchase_timestamp"))))
 
 
-orders_limited = orders.withColumn("days_between_purchase_and_approval",F.datediff(F.col("order_approved_at"),F.col("order_purchase_timestamp"))).limit(10)
+#orders_limited = orders.withColumn("days_between_purchase_and_approval",F.datediff(F.col("order_approved_at"),F.col("order_purchase_timestamp"))).limit(10)
 
-st.dataframe(orders_limited)
+#st.dataframe(orders_limited)
+
+orders = orders.withColumn("days_between_purchase_and_approval", F.datediff(F.col("order_approved_at"), F.col("order_purchase_timestamp")))
 
 
+st.dataframe(orders.select("days_between_purchase_and_approval", "order_approved_at", "order_purchase_timestamp"))
 
 #df1 = df.select("customer_id", "customer_state")
 #print(df1)
 
 #n_rows = customers.count()
 
-#print(f"number od rows in this dataframe: {n_rows}")
-
+# print(f"number od rows in this dataframe: {n_rows}")
+# recursivdade é uma função que chama ela mesma
+# arvore simples , depois abrir pros lados 

@@ -6,12 +6,18 @@ authors = ["Paco <pacodeoliveirasaavedra@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.13"
 pyspark = "^3.5.3"
 kagglehub = "^0.3.3"
 pandas = "^2.2.3"
 streamlit = "^1.40.0"
-
+dbt-core = "^1.8.9"
+dbt-spark = "^1.8.0"
+python-dotenv = "^1.0.1"
+psycopg2-binary = "^2.9.10"
+dbt-postgres = "^1.8.2"
+sqlalchemy = ">=1.4.36,<2.0"
+apache-airflow = "^2.10.4"
 
 [build-system]
 requires = ["poetry-core"]
